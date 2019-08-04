@@ -53,15 +53,15 @@ handler() {
 				;;
 			
 			## /base64 - return a base64 string
-			base64?(@Raqui333bot)) if REPLY=$(jq -re '.message.reply_to_message' <<< ${DATA});then	
-					REPLY_MSG=$(jq -r '.text' <<< ${REPLY})
-					REPLY_ID=$(jq -r '.message_id' <<< ${REPLY})
+			base64?(@Raqui333bot)) if REPLY=$(jq -re '.message.reply_to_message' <<< ${DATA});then
+							REPLY_MSG=$(jq -r '.text' <<< ${REPLY})
+							REPLY_ID=$(jq -r '.message_id' <<< ${REPLY})
 
-					send_msg --reply ${CHAT} "$(base64 <<< ${REPLY_MSG})" ${REPLY_ID}
-				else
-					send_msg ${CHAT} "*Error*: please reply to a message."
-				fi
-				;;
+					        	send_msg --reply ${CHAT} "$(base64 <<< ${REPLY_MSG})" ${REPLY_ID}
+					       else
+							send_msg ${CHAT} "*Error*: please reply to a message."
+					       fi
+					       ;;
 		esac
 	fi
 
