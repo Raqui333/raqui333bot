@@ -1,3 +1,6 @@
+## use extglob in case statement
+shopt -s extglob
+
 declare -A twitch=(
 	[KappaPride]="CAADAQADJQcAAsTJswNX-kZLiMEjjRYE"
 	[PogChamp]="CAADAQADMwcAAsTJswOVakNX-eTErBYE"
@@ -44,13 +47,14 @@ handler() {
 	CHAT=$(jq -r '.message.chat.id' <<< ${DATA})
 
 	if [[ ${MSG} =~ ^/ ]];then
+		shopt -s extglob
 		case $(awk '{print substr($1,2)}' <<< ${MSG}) in
 			## /emotes - list of emotes
-			emotes) send_msg ${CHAT} "${emotes_list}"
+			emotes?(@Raqui333bot)) send_msg ${CHAT} "${emotes_list}"
 				;;
 			
 			## /base64 - return a base64 string
-			base64) if REPLY=$(jq -re '.message.reply_to_message' <<< ${DATA});then	
+			base64?(@Raqui333bot)) if REPLY=$(jq -re '.message.reply_to_message' <<< ${DATA});then	
 					REPLY_MSG=$(jq -r '.text' <<< ${REPLY})
 					REPLY_ID=$(jq -r '.message_id' <<< ${REPLY})
 
