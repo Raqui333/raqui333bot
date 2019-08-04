@@ -47,7 +47,6 @@ handler() {
 	CHAT=$(jq -r '.message.chat.id' <<< ${DATA})
 
 	if [[ ${MSG} =~ ^/ ]];then
-		shopt -s extglob
 		case $(awk '{print substr($1,2)}' <<< ${MSG}) in
 			## /emotes - list of emotes
 			emotes?(@Raqui333bot)) send_msg ${CHAT} "${emotes_list}"
