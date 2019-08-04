@@ -50,7 +50,7 @@ handler() {
 		case $(awk '{print substr($1,2)}' <<< ${MSG}) in
 			## /emotes - list of emotes
 			emotes?(@Raqui333bot)) send_msg ${CHAT} "${emotes_list}"
-				;;
+					       ;;
 			
 			## /base64 - return a base64 string
 			base64?(@Raqui333bot)) if REPLY=$(jq -re '.message.reply_to_message' <<< ${DATA});then
