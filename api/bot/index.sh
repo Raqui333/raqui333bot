@@ -39,15 +39,15 @@ function send_msg() {
 
 function send_base64() {
 	## better understanding purpose
-	## $1 is CHAT, $2 is MSG and $3 is REPLY
-
-	local REPLY_MSG=$(jq -r '.text' <<< ${3})
-	local REPLY_ID=$(jq -r '.message_id' <<< ${3})
+	## $1 is CHAT, $2 is MSG and $3 REPLY
+	
+	REPLY_MSG=$(jq -r '.text' <<< ${3})
+	REPLY_ID=$(jq -r '.message_id' <<< ${3})
 
 	if [[ $(awk '{print $2}' <<< ${2}) = "decode" ]];then
-		send_msg --reply ${1} "$(base64 -d <<< ${REPLY_MSG})" ${REPLY_ID}
+		send_msg --reply ${1} "$(base64 -d <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
 	else
-		send_msg --reply ${1} "$(base64 <<< ${REPLY_MSG})" ${REPLY_ID}
+		send_msg --reply ${1} "$(base64 <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
 	fi
 }
 
