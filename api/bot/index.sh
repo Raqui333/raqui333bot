@@ -38,16 +38,16 @@ function send_msg() {
 }
 
 function send_base64() {
-	## the comments in variables are for better understanding purpose
-	## $1 is CHAT, $2 is MSG and $3 REPLY
-	
-	REPLY_MSG=$(jq -r '.text' <<< ${3#REPLY})
-	REPLY_ID=$(jq -r '.message_id' <<< ${3#REPLY})
+	## better understanding purpose
+	## $1 is CHAT, $2 is MSG and $3 is REPLY
 
-	if [[ $(awk '{print $2}' <<< ${2#MSG}) = "decode" ]];then
-		send_msg --reply ${1#CHAT} "$(base64 -d <<< ${REPLY_MSG})" ${REPLY_ID}
+	local REPLY_MSG=$(jq -r '.text' <<< ${3})
+	local REPLY_ID=$(jq -r '.message_id' <<< ${3})
+
+	if [[ $(awk '{print $2}' <<< ${2}) = "decode" ]];then
+		send_msg --reply ${1} "$(base64 -d <<< ${REPLY_MSG})" ${REPLY_ID}
 	else
-		send_msg --reply ${1#CHAT} "$(base64 <<< ${REPLY_MSG})" ${REPLY_ID}
+		send_msg --reply ${1} "$(base64 <<< ${REPLY_MSG})" ${REPLY_ID}
 	fi
 }
 
