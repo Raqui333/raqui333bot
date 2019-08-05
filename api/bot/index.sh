@@ -37,6 +37,20 @@ function send_msg() {
    	esac
 }
 
+function send_base64() {
+	## the comments in variables are for better understanding purpose
+	## $1 is CHAT, $2 is MSG and $3 REPLY
+	
+	REPLY_MSG=$(jq -r '.text' <<< ${3#REPLY})
+	REPLY_ID=$(jq -r '.message_id' <<< ${3#REPLY})
+
+	if [[ $(awk '{print $2}' <<< ${2#MSG}) = "decode" ]];then
+		send_msg --reply ${1#CHAT} "$(base64 -d <<< ${REPLY_MSG})" ${REPLY_ID}
+	else
+		send_msg --reply ${1#CHAT} "$(base64 <<< ${REPLY_MSG})" ${REPLY_ID}
+	fi
+}
+
 handler() {
 	http_response_json
 
@@ -54,10 +68,7 @@ handler() {
 			
 			## /base64 - return a base64 string
 			base64?(@Raqui333bot)) if REPLY=$(jq -re '.message.reply_to_message' <<< ${DATA});then
-							REPLY_MSG=$(jq -r '.text' <<< ${REPLY})
-							REPLY_ID=$(jq -r '.message_id' <<< ${REPLY})
-
-					        	send_msg --reply ${CHAT} "$(base64 <<< ${REPLY_MSG})" ${REPLY_ID}
+							send_base64 ${CHAT} "${MSG}" "${REPLY}"
 					       else
 							send_msg ${CHAT} "*Error*: please reply to a message."
 					       fi
