@@ -59,9 +59,11 @@ handler() {
 
 	MSG=$(jq -r '.message.text' <<< ${DATA})
 	CHAT=$(jq -r '.message.chat.id' <<< ${DATA})
+	ID=$(jq -r '.message.message_id' <<< ${DATA})
 
 	if [[ ${MSG} =~ ^/ ]];then
-		case $(awk '{print substr($1,2)}' <<< ${MSG}) in
+		bot_command=$(awk '{print substr($1,2)}' <<< ${MSG})
+		case ${bot_command} in
 			## /emotes - list of emotes
 			emotes?(@Raqui333bot)) send_msg ${CHAT} "${emotes_list}"
 					       ;;
@@ -73,6 +75,12 @@ handler() {
 							send_msg ${CHAT} "*Error*: please reply to a message."
 					       fi
 					       ;;
+		
+			## handler empty commands
+			*) if [[ -z ${bot_command} ]];then
+			   	send_msg --reply ${CHAT} "Main Menu" ${ID}
+			   fi
+			   ;;
 		esac
 	fi
 
