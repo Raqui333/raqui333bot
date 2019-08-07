@@ -9,6 +9,9 @@ declare -A twitch=(
 	[LUL]="CAADAQADKQcAAsTJswMfEVJbyr4KCRYE"
 )
 
+declare source_button='[[{"text":"Source Code","url":"https://github.com/UserUnavailable/raqui333bot/blob/master/api/bot/index.sh"},
+                         {"text":"GitHub","url":"https://github.com/UserUnavailable"}]]'
+
 ## Chat message about availables Emotes
 emotes_list="*A list of availables Emotes:*"$'\n'
 for emote in ${!twitch[@]}; do
@@ -17,21 +20,31 @@ done
 
 function send_msg() {
 	case ${1} in
-		--reply)   curl -s -F "chat_id=${2}"             \
-			           -F "text=${3}"                \
-				   -F "parse_mode=Markdown"      \
-				   -F "reply_to_message_id=${4}" \
+		--reply)   curl -s -F "chat_id=${2}"                            \
+			           -F "text=${3}"                               \
+				   -F "reply_to_message_id=${4}"                \
+				   -F "parse_mode=Markdown"                     \
 		          	   -X POST ${BOT}/sendMessage
 			 	   ;;
 		
-		--sticker) curl -s -F "chat_id=${2}"             \
-			           -F "sticker=${3}"             \
+		--sticker) curl -s -F "chat_id=${2}"                            \
+			           -F "sticker=${3}"                            \
 			   	   -X POST ${BOT}/sendSticker
 			   	   ;;
 		
-		*)         curl -s -F "chat_id=${1}"             \
-			           -F "text=${2}"                \
-			           -F "parse_mode=Markdown"      \
+		--button)  curl -s -F "chat_id=${2}"                            \
+				   -F "text=${3}"                               \
+				   -F "reply_markup={\"inline_keyboard\":${4}}" \
+				   -F "reply_to_message_id=${5}"                \
+				   -F "parse_mode=Markdown"                     \
+			           -F "disable_web_page_preview=true"           \
+				   -X POST ${BOT}/sendMessage
+				   ;;
+		                  
+		
+		*)         curl -s -F "chat_id=${1}"                            \
+			           -F "text=${2}"                               \
+			           -F "parse_mode=Markdown"                     \
 		   	           -X POST ${BOT}/sendMessage
 			           ;;
    	esac
@@ -75,7 +88,11 @@ handler() {
 							send_msg ${CHAT} "*Error*: please reply to a message."
 					       fi
 					       ;;
-		
+			
+			## /source - link to the bot source
+			source?(@Raqui333bot)) send_msg --button ${CHAT} "*This is my code and my owner Github*:" "${source_button}" ${ID}
+			                       ;;
+			
 			## handler empty commands
 			*) if [[ -z ${bot_command} ]];then
 			   	send_msg --reply ${CHAT} "Main Menu" ${ID}
