@@ -9,8 +9,8 @@ declare -A twitch=(
 	[LUL]="CAADAQADKQcAAsTJswMfEVJbyr4KCRYE"
 )
 
-declare source_button='[[{"text":"Source Code","url":"https://github.com/UserUnavailable/raqui333bot/blob/master/api/bot/index.sh"},
-                         {"text":"GitHub","url":"https://github.com/UserUnavailable"}]]'
+source_button='[[{"text":"Source Code","url":"https://github.com/UserUnavailable/raqui333bot/blob/master/api/bot/index.sh"},
+                 {"text":"GitHub","url":"https://github.com/UserUnavailable"}]]'
 
 ## Chat message about availables Emotes
 emotes_list="*A list of availables Emotes:*"$'\n'
@@ -90,7 +90,7 @@ handler() {
 					       ;;
 			
 			## /source - link to the bot source
-			source?(@Raqui333bot)) send_msg --button ${CHAT} "*This is my code and my owner Github*:" "${source_button}" ${ID}
+			source?(@Raqui333bot)) send_msg --button ${CHAT} "*This is my code and my owner's Github*:" "${source_button}" ${ID}
 			                       ;;
 			
 			## handler empty commands
