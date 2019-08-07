@@ -1,0 +1,23 @@
+{
+  "name": "raqui333bot",
+  "version": "1.0.0",
+  "description": "telegram bot",
+  "main": "index.js",
+  "dependencies": {
+    "now-bash": "^1.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/UserUnavailable/raqui333bot.git"
+  },
+  "author": "Kleber",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/UserUnavailable/raqui333bot/issues"
+  },
+  "homepage": "https://github.com/UserUnavailable/raqui333bot#readme"
+}
