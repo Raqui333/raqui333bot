@@ -96,9 +96,7 @@ handler() {
 			## /color - sends a hex color
 			color?(@Raqui333bot)) color=$(awk '{print $2}' <<< ${MSG})
 					      if convert -size 512x512 xc:"#${color#\#}" /tmp/color.png;then
-						      curl -s -F "chat_id=${CHAT}"         \
-					              	      -F "sticker=@/tmp/color.png" \
-						      	      -X POST ${BOT}/sendSticker
+						      send_msg --sticker ${CHAT} "@/tmp/color.png"
 					      else
 						      send_msg --reply ${CHAT} "*Error*: '${color}' is not a valid color." ${ID}
 					      fi
