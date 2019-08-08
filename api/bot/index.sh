@@ -94,7 +94,7 @@ handler() {
 			                       ;;
 			
 			## /color - sends a hex color
-			color?(@Raqui333bot)) color=$(awk '{print $2}' <<< ${MSG})
+			color?(@Raqui333bot)) color=$(grep -Eo '#\w+' <<< ${MSG})
 					      if convert -size 512x512 xc:"#${color#\#}" /tmp/color.png;then
 						      send_msg --sticker ${CHAT} "@/tmp/color.png"
 					      else
