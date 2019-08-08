@@ -93,6 +93,17 @@ handler() {
 			source?(@Raqui333bot)) send_msg --button ${CHAT} "*This is my code and my owner's Github*:" "${source_button}" ${ID}
 			                       ;;
 			
+			## /color - sends a hex color
+			color?(@Raqui333bot)) color=$(awk '{print $2}' <<< ${MSG})
+					      if convert -size 512x512 xc:"#${color#\#}" /tmp/color.png;then
+						      curl -s -F "chat_id=${CHAT}"         \
+					              	      -F "sticker=@/tmp/color.png" \
+						      	      -X POST ${BOT}/sendSticker
+					      else
+						      send_msg --reply ${CHAT} "*Error*: '${color}' is not a valid color." ${ID}
+					      fi
+					      ;;
+
 			## handler empty commands
 			*) if [[ -z ${bot_command} ]];then
 			   	send_msg --reply ${CHAT} "Main Menu" ${ID}
