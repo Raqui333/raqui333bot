@@ -95,7 +95,7 @@ handler() {
 			
 			## /color - sends a hex color
 			color?(@Raqui333bot)) color=$(grep -Eo '#\w+' <<< ${MSG})
-					      if convert -size 512x512 xc:"#${color#\#}" /tmp/color.png;then
+					      if convert -size 512x512 xc:"${color}" /tmp/color.png;then
 						      send_msg --sticker ${CHAT} "@/tmp/color.png"
 					      else
 						      send_msg --reply ${CHAT} "*Error*: '${color}' is not a valid color." ${ID}
