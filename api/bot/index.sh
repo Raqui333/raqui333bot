@@ -51,15 +51,19 @@ function send_msg() {
 
 function send_base64() {
 	## better understanding purpose
-	## $1 is CHAT, $2 is MSG and $3 REPLY
+	## $1 is CHAT, $2 is MSG, $3 is REPLY and $4 id ID
 	
 	local REPLY_MSG=$(jq -r '.text' <<< ${3})
 	local REPLY_ID=$(jq -r '.message_id' <<< ${3})
-
-	if [[ $(awk '{print $2}' <<< ${2}) = "decode" ]];then
-		send_msg --reply ${1} "$(base64 -d <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
+	
+	if [[ ${REPLY_MSG} != "null" ]];then
+		if [[ $(awk '{print $2}' <<< ${2}) = "decode" ]];then
+			send_msg --reply ${1} "$(base64 -d <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
+		else
+			send_msg --reply ${1} "$(base64 <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
+		fi
 	else
-		send_msg --reply ${1} "$(base64 <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
+		send_msg --reply ${1} "*Error*: that is not a text message." ${4}
 	fi
 }
 
@@ -98,7 +102,7 @@ handler() {
 			
 			## /base64 - return a base64 string
 			base64?(@Raqui333bot)) if REPLY=$(jq -re '.message.reply_to_message' <<< ${DATA});then
-							send_base64 ${CHAT} "${MSG}" "${REPLY}"
+							send_base64 ${CHAT} "${MSG}" "${REPLY}" ${ID}
 					       else
 							send_msg ${CHAT} "*Error*: please reply to a message."
 					       fi
