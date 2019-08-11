@@ -2,7 +2,6 @@
 shopt -s extglob
 
 declare -A twitch=(
-	[KappaPride]="CAADAQADJQcAAsTJswNX-kZLiMEjjRYE"
 	[PogChamp]="CAADAQADMwcAAsTJswOVakNX-eTErBYE"
 	[Kappa]="CAADAQADEQcAAsTJswOwrIcn0_a7ixYE"
 	[4Head]="CAADAQADEwcAAsTJswP8QrR3rJSgRBYE"
@@ -54,13 +53,29 @@ function send_base64() {
 	## better understanding purpose
 	## $1 is CHAT, $2 is MSG and $3 REPLY
 	
-	REPLY_MSG=$(jq -r '.text' <<< ${3})
-	REPLY_ID=$(jq -r '.message_id' <<< ${3})
+	local REPLY_MSG=$(jq -r '.text' <<< ${3})
+	local REPLY_ID=$(jq -r '.message_id' <<< ${3})
 
 	if [[ $(awk '{print $2}' <<< ${2}) = "decode" ]];then
 		send_msg --reply ${1} "$(base64 -d <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
 	else
 		send_msg --reply ${1} "$(base64 <<< ${REPLY_MSG} | tr -d '\n')" ${REPLY_ID}
+	fi
+}
+
+function send_color() {
+	## $1 is CHAT, $2 is MSG and $3 is ID	
+
+	local color=$(grep -Eo '#\w+' <<< ${2})
+	
+	if [[ ${color} ]];then
+		if convert -size 512x512 xc:"${color}" /tmp/color.png;then
+		        send_msg --sticker ${1} "@/tmp/color.png"
+		else
+			send_msg --reply ${1} "*Error*: '${color}' is not a valid color." ${3}
+		fi
+	else
+		send_msg --reply ${1} "*Error*: no color found." ${3}
 	fi
 }
 
@@ -94,12 +109,7 @@ handler() {
 			                       ;;
 			
 			## /color - sends a hex color
-			color?(@Raqui333bot)) color=$(grep -Eo '#\w+' <<< ${MSG})
-					      if convert -size 512x512 xc:"${color}" /tmp/color.png;then
-						      send_msg --sticker ${CHAT} "@/tmp/color.png"
-					      else
-						      send_msg --reply ${CHAT} "*Error*: '${color}' is not a valid color." ${ID}
-					      fi
+			color?(@Raqui333bot)) send_color ${CHAT} "${MSG}" ${ID}
 					      ;;
 
 			## handler empty commands
