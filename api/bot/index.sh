@@ -8,6 +8,10 @@ declare -A twitch=(
 	[LUL]="CAADAQADKQcAAsTJswMfEVJbyr4KCRYE"
 )
 
+declare -A irc=(
+	[hide]="CgADBAADH58AAjcYZAe93ngRN_RvJRYE"
+)
+
 source_button='[[{"text":"Source Code","url":"https://github.com/UserUnavailable/raqui333bot/blob/master/api/bot/index.sh"},
                  {"text":"GitHub","url":"https://github.com/UserUnavailable"}]]'
 
@@ -39,7 +43,11 @@ function send_msg() {
 			           -F "disable_web_page_preview=true"           \
 				   -X POST ${BOT}/sendMessage
 				   ;;
-		                  
+
+		--animate) curl -s -F "chat_id=${2}"                            \
+				   -F "animation=${3}"                          \
+				   -X POST ${BOT}/sendAnimation                 \
+                                   ;;
 		
 		*)         curl -s -F "chat_id=${1}"                            \
 			           -F "text=${2}"                               \
@@ -83,6 +91,24 @@ function send_color() {
 	fi
 }
 
+function send_irc() {
+	## $1 is CHAT, $2 is MSG
+
+	local cmd=$(awk '{print $2}' <<< ${2})
+	
+	if [[ ${cmd} ]];then
+		for action in ${!irc[@]};do
+			if [[ ${cmd} = ${action} ]];then
+				send_msg --animate ${1} ${irc[${action}]}
+				return
+			fi	
+		done
+
+		## handler empty action
+		send_msg ${1} "*Error*: no '${cmd}' action found."
+	fi
+}
+
 handler() {
 	http_response_json
 
@@ -115,6 +141,10 @@ handler() {
 			## /color - sends a hex color
 			color?(@Raqui333bot)) send_color ${CHAT} "${MSG}" ${ID}
 					      ;;
+
+			## /me - sed irc like actions
+			me?(@Raqui333bot)) send_irc ${CHAT} "${MSG}"
+                                           ;;
 
 			## handler empty commands
 			*) if [[ -z ${bot_command} ]];then
