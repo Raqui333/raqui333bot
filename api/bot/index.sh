@@ -8,6 +8,7 @@ declare -A twitch=(
 	[4Head]="CAADAQADEwcAAsTJswP8QrR3rJSgRBYE"
 	[LUL]="CAADAQADKQcAAsTJswMfEVJbyr4KCRYE"
 	[FailFish]="CAADAQADGwcAAsTJswMrbQxZv1lXCRYE"
+	[KappaPride]="CAADAQADJQcAAsTJswNX-kZLiMEjjRYE"
 )
 
 ## Chat message about availables Emotes
@@ -97,17 +98,11 @@ function send_irc {
 
 	local cmd=$(awk '{print $2}' <<< ${2})
 	
-	if [[ ${cmd} ]];then
-		for action in ${!irc[@]};do
-			if [[ ${cmd} = ${action} ]];then
-				send_msg --animate ${1} ${irc[${action}]} ${3}
-				return
-			fi	
-		done
-
-		## empty action handler
-		send_msg ${1} "*Error*: no '${cmd}' action found."
-	fi
+	for action in ${!irc[@]};do
+		if [[ ${cmd} = ${action} ]];then
+			send_msg --animate ${1} ${irc[${action}]} ${3}
+		fi	
+	done
 }
 
 handler() {
@@ -161,7 +156,9 @@ handler() {
 
 	## Twitch Emojis
 	for emote in ${!twitch[@]}; do
-		if [[ ${TEXT} =~ ${emote} ]]; then
+		## bash a thing
+		local re="\\b${emote}\\b"
+		if [[ ${TEXT} =~ ${re} ]]; then
 			send_msg --sticker ${CHAT} ${twitch[${emote}]} ${MSG_REPLY_ID}
 			break
 		fi
